@@ -1,37 +1,65 @@
 /*
-  A simple code that is implemented in the ver1.0 of ProtoKey
-  that can check that composents are correctly connected to the right pins.
-  It returns through serial the number of critical fails regarding the screen, encoder and return button.
-*/
+ * Protokey Device test
+ * 
+ * This code checks the main functionalities of the Protokey.
+ * It should be run to verify that every function is working properly.
+ * It is a debug of the device in itself.
+ * 
+ * 
+ * The program works in 2 stages:
+ * 
+ * First, it will display common info on the ESP32 chip used, including:
+ *  - Cores & revision
+ *  - CPU freq
+ *  - Flash size
+ *  - RAM free and used spaces
+ *  - The MAC address of the ESP32
+ * 
+ * Afterwards, it will check the functionalities of each componenent embedded in the system:
+ *  - Checks every GPIO pin for a connection.
+ *  - Checks the functioning of the OLED screen.
+ *  - Checks the encoder.
+ * 
+ * !!! Make sure before flashing the code [Tools → USB CDC On Boot → Enabled]
+ * 
+ */
+
+// 
+#include <esp_system.h>
+#include <esp_chip_info.h>
+#include <esp_flash.h>
+#include <esp_mac.h>
+#include <WiFi.h>
+
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 
-// ----- OLED config -----
+// OLED config
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 128
 #define OLED_RESET -1
 Adafruit_SH1107 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-// ----- Rotary encoder pins -----
+// Rotary encoder pins
 #define ENC_BTN   13
 #define ENC_PIN_A 14
 #define ENC_PIN_B 15
 
-// ----- Return button pin -----
+// Return button pin
 #define BTN_return   16   // GP16
 
-// ----- Encoder -----
+// Encoder
 int selectedIndex = 0;
 int lastA = HIGH;
 int lastB = HIGH;
 
-// ----- Button_debounce -----
+// Button_debounce
 unsigned long lastButtonPress = 0;
 const unsigned long debounceMs = 200;
 
-// ----- Menus -----
+// Menus
 const int optionHeight = 10;
 const int menuX = 2;
 const int menuY = 12;
@@ -47,7 +75,7 @@ const int menuKMCount = sizeof(menuKMItems) / sizeof(menuKMItems[0]);
 const char** currentMenu = menuMAINItems;
 int currentMenuCount = menuMAINCount;
 
-// ----- MODES -----
+// MODES
 int debug_mode = 0;
 
 
@@ -65,18 +93,55 @@ void setup() {
   if (!display.begin(0x3C, true)) {
     for (;;); // hang if display not found
   }
+
+  chip_test();
+  self_test();
 }
 
 void loop(){
-  self_test();
+  delay(10000);
+}
+
+int chip_test(){
+  
+  delay(500);
+  Serial.println("=== SYSTEM INFO ===");
+  
+  // Chip info
+  esp_chip_info_t chip_info;
+  esp_chip_info(&chip_info);
+  Serial.printf("Cores: %d\n", chip_info.cores);
+  Serial.printf("Revision: %d\n", chip_info.revision);
+
+  // CPU speed
+  Serial.printf("CPU Frequency: %d MHz\n", getCpuFrequencyMhz());
+
+  // Flash size
+  uint32_t flash_size = 0;
+  esp_flash_get_size(NULL, &flash_size);
+  Serial.printf("Flash Size: %d MB\n", flash_size / (1024 * 1024));
+
+  // RAM info
+  Serial.printf("Heap Size: %d bytes\n", ESP.getHeapSize());
+  Serial.printf("Free Heap: %d bytes\n", ESP.getFreeHeap());
+
+  // MAC address
+  uint8_t mac[6];
+  esp_read_mac(mac, ESP_MAC_WIFI_STA);
+  Serial.printf("MAC Address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+                
+  Serial.println("=========================");
 }
  
 int self_test(){
-  Serial.print("###_SELF_TEST_###");
+  
+  delay(500);
+  Serial.print("=== SELF_TEST ===");
   int critfail = 0;
   int fail = 0;
 
-  Serial.print("#1#_GPIO_VAL_CHECK"); // Check if theres an input on each GPIO pin
+  Serial.print("=1 GPIO_VAL_CHECK"); // Check if theres an input on each GPIO pin
   for (int i = 0; i<= 10; i++){
     int pin = A0+i;
     int pinVal = analogRead(pin);
@@ -92,7 +157,7 @@ int self_test(){
     }
   delay(10); 
   }
-  Serial.print("#2#_OLED_CHECK"); // Checks if the oled is correctly plugged in.
+  Serial.print("=2 OLED_CHECK"); // Checks if the oled is correctly plugged in.
   if (!display.begin(0x3C, true)) { 
     Serial.println("OLED not found (check pinout + I²C address)"); // check if the if 
     critfail++;
@@ -102,7 +167,7 @@ int self_test(){
     Serial.println("OLED PASS");
   }
   delay(10);
-  Serial.print("#3#_ENCODER_CHECK"); // Checks if the encoder is correctly plugged in.
+  Serial.print("=3 ENCODER_CHECK"); // Checks if the encoder is correctly plugged in.
   if (digitalRead(ENC_PIN_A) == LOW && digitalRead(ENC_PIN_B) == LOW) {
     Serial.println("Encoder not found (check pinout)");
     critfail++;
@@ -115,10 +180,11 @@ int self_test(){
   delay(10); 
 
 
-  Serial.println("###_DONE_###");
+  Serial.println("=== DONE ===");
   Serial.print("Critical fails: ");
   Serial.println(critfail);
   Serial.print("Fails: ");
   Serial.println(fail);
+  Serial.println("=========================");
   return 0;
 }
