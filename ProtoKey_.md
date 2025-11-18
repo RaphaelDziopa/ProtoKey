@@ -2,61 +2,61 @@
 
 A project to create a swiss army knife but for electronics. The whole system is to be compact and lightweight with ease of repairability and modifications. 
 
-📁 ProtoKey/
-├── 📂 /
-│   ├── 📂 html
-│   ├── 📂 images
-│   ├── 📂 style
-│   └── 📂 scripts
-├── 📂 .github/
-│   └── 📂 workflow
-├── 📂 README/
-│   └── 📂 images
-├── LICENCE
-└── README.md 
+📁 ProtoKey/  
+├── 📂 /  
+│   ├── 📂 html  
+│   └── 📂 scripts  
+├── 📂 .github/  
+├── 📂 README/  
+├── LICENCE  
+└── README.md   
 
 
 
 
 ## 1. Requirements
-Based on an ESP32 dev board it must fulfil multiple requirements.
 
-Internal battery to the system
-Handle RFID
-Handle 2.4GHz and bluetooth
-Handle ESPnow
-A small screen for battery percentage and connection info
-Send all data to a selfhosted webserver (thus accessible by phone)
-Data writes and modifications to be sent by phones from the webserver.
-Uses infrared light as a universal remote
+The idea being based on the Flipper Zero, this project doesn't intend to copy the Flipper. It is a student's project to create a usable multitool, to help in small hobbyist electronics, in a small and portable package. Thus, it has to be able to anwser to multiple demands to debug projects. The ProtoKey is based on an ESP32 dev board with the addition of multiple open source modules.
 
-The addition of new modules such as sim readers or gps have to be possible and reasonably easy physically in the system but also in the code.
+The system must:
 
+Have an onboard user interface, with an OLED b&w, with an encoder and 2 buttons for the input.  
+Have a 1 channel Occiloscope for AC/DC in range [-15;15]V and [0;30]V.  
+Be able to run with an intergrated Li-Po battery.  
+Handle RFID with copy and paste functionalities.  
+Be able to act as a universal IR emiter and receiver, such as a universal remote.
+
+
+For future versions:  
+Handle 2.4GHz and Bluetooth  
+Handle ESPnow  
+
+The addition of new modules such as SIM or GPS must be possible and reasonably easy physically and through the code.
 
 
 ## 2. Components
 
 ### 2.1 Mainboard - ESP32 Devkit
 
-The ESP32 dev board formally named the ESP32 VROOM 32 has an USB-C connector with 34 GPIO pins. With included Wifi and bluetooth capabilities powered with the ESP32-D0WDQ6 chip.
+The ESP32 dev board formally named the ESP32 VROOM 32 has an USB-C connector with 34 GPIO pins. With included Wifi and bluetooth Capabilities powered with the ESP32-D0WDQ6 chip.
 
-For specifications it has:
+For specifications it has:  
 
-USB-C Input voltage		5V
-GPIO Input/Output		3.3V
-Minimal functioning Current	min. 500mA
-Clock speed margins			80MHz / 240MHz
-RAM					512kB
-External Flash				4MB
-Pins I/O				34
-Supported Interfaces		SPI, I2C, I2S, CAN, UART
-Wi-Fi protocols			802.11 b/g/n (802.11n up to 150 Mbps)
-Wi-Fi frequencies			2.4 GHz - 2.5 GHz
-Bluetooth				V4.2 - BLE & Classic Bluetooth
-Antenna				PCB
-Dimensions				56x28x13mm
+USB-C Input voltage		5V  
+GPIO Input/Output		3.3V  
+Minimal functioning Current	min. 500mA  
+Clock speed margins			80MHz / 240MHz  
+RAM					512kB  
+External Flash				4MB  
+Pins I/O				34  
+Supported Interfaces		SPI, I2C, I2S, CAN, UART  
+Wi-Fi protocols			802.11 b/g/n (802.11n up to 150 Mbps)  
+Wi-Fi frequencies			2.4 GHz - 2.5 GHz  
+Bluetooth				V4.2 - BLE & Classic Bluetooth  
+Antenna				PCB  
+Dimensions				56x28x13mm  
 
-The pinout of the GPIO pins is as follows :
+The pinout of the GPIO pins is as follows :  
 
 For more information see: (https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf)
 
