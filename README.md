@@ -19,7 +19,7 @@ For future implementations:
 Handle 2.4GHz and Bluetooth  
 Handle ESPnow  
 
-The addition of new modules such as SIM or GPS must be possible and reasonably easy physically and through the code.
+The addition of new modules such as SIM or GPS must be possible and reasonably easy as a plug and play module (with the code needing only little changes).
 
 
 ## 2. Components
@@ -56,6 +56,7 @@ Voltage: 3.3V-5V DC.
 Viewing angle: >160°
 Resolution: 128 x 64
 Working temperature: -30°C ~ 70°C 
+Size: 3.5cm / 5cm
 
 ### 2.3 User input - Encoder and push buttons.
 It uses a rotary encoder, for the selection of diffrent values smoothly, with and intergrated button, for the selection in addition to another push button, to return or cancel the selection.
@@ -63,8 +64,8 @@ It uses a rotary encoder, for the selection of diffrent values smoothly, with an
 ### 2.4 RFID module -
 Not yet decided
 
-### 2.5 RF module - 
-Not yet decided.
-
 ### 2.6 Case
 The case will be 3D-printer when the full software and hardware will function without needing changes.
+
+
+### This README will be changed when the project is finished. As of now it is a way for me to keep track of the needed requirements and features to be added.
